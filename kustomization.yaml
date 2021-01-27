@@ -1,0 +1,5 @@
+configMapGenerator:
+- name: cert-files
+  files:
+  - certificates/cert.pem
+  - certificates/cert2.pem

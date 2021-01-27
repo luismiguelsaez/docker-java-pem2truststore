@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  pem2truststore:
+    build: .
+    command: 
+      - 'keytool'
+      - '-list'
+      - '-v'
+      - '-keystore'
+      - '/usr/local/openjdk-11/lib/security/cacerts'
+      - '-storepass'
+      - 'changeit'
+    environment:
+      password: changeit # Keystore password
+      keyfile: # certificate private key
+      crtfile: # certificate file
+      keystore_pkcs12: # PKCS keystore created in the process
+      keystore_jks: '$JAVA_HOME/lib/security/cacerts' # java JKS keystore
+    volumes:
+      - $PWD/certificates:/certificates:ro
+      - $PWD/keystore:/keystore:ro

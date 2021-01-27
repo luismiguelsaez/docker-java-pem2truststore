@@ -1,0 +1,33 @@
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-certs
+  labels:
+    app: play-api
+spec:
+  containers:
+    - name: app-container
+      image: busybox:1.28
+      command: ['sh', '-c', 'while true;do ls /keystore;sleep 1;done']
+      volumeMounts:
+        - mountPath: /keystore
+          name: keystore
+  initContainers:
+    - name: init-java-cacerts
+      image: openjdk:11-jre-slim
+      command: ["keytool","-import","-file","/certificates/cert.pem","-alias","firstCA","-keystore","/keystore/truststore.jks"]
+      volumeMounts:
+        - mountPath: /keystore
+          name: keystore
+        - name: cert-files
+          mountPath: /certificates/
+          #mountPath: /certificates/cert.pem
+          #subPath: cert.pem
+  volumes:
+    - name: keystore
+      emptyDir: {}
+    - name: cert-files
+      configMap:
+        name: cert-files
