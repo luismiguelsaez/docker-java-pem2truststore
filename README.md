@@ -1,30 +1,30 @@
-openssl pkcs12 -export -inkey $keyfile -in $crtfile -out $keystore.pkcs12 -password pass:$password
-keytool -importkeystore -noprompt -srckeystore $keystore.pkcs12 -srcstoretype pkcs12 -destkeystore $keystore.jks -storepass $password -srcstorepass $password
 
-keytool -list -v  -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit
-
-
+## Preparation
 ### Generate test certificate
 ```
 openssl req -x509 -newkey rsa:4096 -keyout certificates/key.pem -out certificates/cert.pem -days 365 -nodes -subj '/CN=localhost'
 ```
 
-### Run testing jre
+## Image build
+### Build
 ```
-docker run --rm -it -v $PWD/certificates:/certificates:ro openjdk:11-jre-slim sh
+docker build -t luismiguelsaez/pem2truststore .
+```
+### Push
+```
+docker push luismiguelsaez/pem2truststore
 ```
 
-### Create certificates configmap
+## Kubernetes testing
+### Create certificates configmap ( optional, as it's included in the manifest )
 ```
 kubectl create configmap cert-files --from-file=certificates/
 ```
-
+### Apply manifests
 ```
-cat <<EOF >./kustomization.yaml
-configMapGenerator:
-- name: cert-files
-  files:
-  - certificates/cert.pem
-  - certificates/cert2.pem
-EOF
-```# docker-java-pem2truststore
+kubectl apply -f k8s
+```
+### Check logs
+```
+kubectl logs -f pods/test-certs -c init-java-cacerts
+```
