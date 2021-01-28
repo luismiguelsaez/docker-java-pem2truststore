@@ -4,12 +4,14 @@ CERTS_DIR=${CERTS_DIR:-"/certificates"}
 STORE_DIR=${STORE_DIR:-"/keystore"}
 STORE_NAME=${STORE_NAME:-"keystore.jks"}
 STORE_PASS=${STORE_PASS:-"changeit"}
-CACERTS=1
+CACERTS=${CACERTS:-1}
 
 if [ $CACERTS -eq 0 ]
 then
+    echo "Writing to custom keystore on ${STORE_DIR}/${STORE_NAME}"
     PARAMS="-keystore ${STORE_DIR}/${STORE_NAME}"
 else
+    echo "Writing to default cacerts keystore"
     PARAMS="-trustcacerts -cacerts"
 fi
  

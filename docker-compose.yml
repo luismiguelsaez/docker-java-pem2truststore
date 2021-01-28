@@ -5,7 +5,7 @@ services:
   pem2truststore:
     build: .
     environment:
-      CACERTS: 1
+      CACERTS: 0
     volumes:
       - $PWD/certificates:/certificates:ro
-      - $PWD/keystore:/keystore:ro
+      - $PWD/keystore:/keystore:rw
