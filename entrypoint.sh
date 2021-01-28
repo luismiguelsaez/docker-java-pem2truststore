@@ -14,7 +14,7 @@ else
     echo "Writing to default cacerts keystore"
     PARAMS="-trustcacerts -cacerts"
 fi
- 
+
 if [ -d ${CERTS_DIR} ] && [ $(ls ${CERTS_DIR}/*.pem 2>/dev/nul | wc -l ) -gt 0 ]
 then
     c=0
